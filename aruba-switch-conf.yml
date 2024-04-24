@@ -1,0 +1,64 @@
+- name: show version in aruba 2930m switch
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: create vlan
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - vlan 500
+          - name vlan_500
+
+    - name: Map port to VLAN (access port)
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - vlan 500
+          - untagged 25
+
+    - name: create a trunk port map specific vlan  #configure
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - trunk 20 trk20 trunk
+          - tagged 12-13
+
+    - name: Configure IP address for VLAN
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - vlan 500
+          - ip address 192.168.10.1 255.255.255.0
+          - no shutdown
+
+    - name: Configure route port and assign IP address #configure
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - interface 24
+          - ip address 192.168.2.2 255.255.255.0
+          - no shutdown
+
+    - name: Set lacp group
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - interface 5-6 lacp active
+#switch-2         - interface A5-A6 lacp passive
+
+    - name: configure static route
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - ip route 192.168.4.0 255.255.255.0 192.168.5.1
+
+    - name: update ip and default gateway
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - ip default-gateway 192.168.1.1

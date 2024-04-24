@@ -1,0 +1,20 @@
+- name: show version in aruba 2930m switch
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  tasks:
+    - name: Show version
+      arubaoss_command:
+        commands:
+          - show version
+
+            #    - name: gather fact
+            #      arubaos_facts:
+            #        tags: facts
+            #      register: output
+
+            #    - name: print msg
+            #      debug:
+            #        var: output

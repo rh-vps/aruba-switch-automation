@@ -1,0 +1,17 @@
+- name: gather facts
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: gather facts
+      arubaoss_command: 
+        commands: show version
+      register: output
+
+    - name: debug
+      debug: 
+        var: output

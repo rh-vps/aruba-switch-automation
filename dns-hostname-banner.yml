@@ -1,0 +1,31 @@
+- name: configure dns, hostname and banner on Aruba switch
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Set DNS server & Domain name
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - ip dns server-address priority 6 "{{ dns_server_ip }}"
+          - ip dns domain-name "{{ domain_name }}"
+          #          - configure dns -p "{{ dns_server_ip }}"
+          #          - domain-name "{{ domain_name }}"
+
+    - name: set hostname
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - hostname "{{ hostname }}"
+
+    - name: create banner
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - banner motd ^
+
+            This is a secure system.Unauthorized access is not allowed^

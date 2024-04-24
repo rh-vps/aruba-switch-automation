@@ -1,0 +1,18 @@
+- name: configure radius server 
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: configure radius server
+      arubaoss_command:
+        commands:
+          - 'radius-server host "{{ radius_server_ip }}" key "{{ radius_key }}"'
+          - 'aaa authentication login privilege-mode'
+          - 'aaa authentication login radius-local'
+          - 'aaa authentication enable radius-local'
+          - 'aaa accounting network start-stop radius'
+      when: radius_server_ip is defined

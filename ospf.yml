@@ -1,0 +1,18 @@
+- name: configure ospf
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: ospf route config
+      arubaoss_command:
+        commands:
+          - ip routing
+          - router ospf 1
+          - router-id <id> 
+          - area <>
+          - interface 1/1/1
+          - ip ospf 1 area 1

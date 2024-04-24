@@ -1,0 +1,4 @@
+dns_server_ip: 192.168.128.47
+domain_name: vpslab.com
+hostname: arubaswitch
+

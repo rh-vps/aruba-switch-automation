@@ -1,0 +1,15 @@
+- name: show version in aruba 2930m switch
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  tasks:
+    - name: gather all legacy fact
+      network.aruba_config:
+        gather_subset: all
+      register: current_firmware_version
+
+    - name: Display current firmware version
+      debug:
+        var: current_firmware_version.ansible_facts.ansible_net_version

@@ -1,0 +1,15 @@
+- name: delete user
+  hosts: all
+  ignore_errors: yes
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: delete user
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - no password operator

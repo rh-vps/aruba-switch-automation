@@ -1,0 +1,15 @@
+- name: show version in aruba 2930m switch
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: create vlan
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - vlan 500
+          - name vlan_500

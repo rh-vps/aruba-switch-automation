@@ -1,0 +1,16 @@
+- name: create user
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Create a user 
+      arubaoss_command:
+        commands:
+          - configure terminal
+          - password operator user-name admin3 plaintext test123$ 
+          # - username admin privilege 15 password 0 admin@123
+          #    - user admin2 group administrators password plaintext admin@123

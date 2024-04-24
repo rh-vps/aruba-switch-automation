@@ -1,0 +1,49 @@
+- name: firmware update
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: copyfile from tftp
+      arubaoss_command:
+        commands: 'copy tftp flash 192.168.135.102 WC_16_11_0051.swi secondary'
+        prompt: 
+          - Continue (y/n)?
+        answer:
+          - y
+      vars:
+        ansible_command_timeout: 1200
+    
+    - name: boot system from secondary
+      arubaoss_command:
+        commands: 'boot system flash secondary'
+        prompt:
+          - Continue (y/n)?
+        answer:
+          - y
+
+    - name: copy image to primary
+      arubaoss_command:
+        commands: 'copy flash flash primary'
+
+    - name: boot system from primary
+      arubaoss_command:
+        commands: 'boot system flash primary'
+         prompt:
+          - Continue (y/n)?
+        answer:
+          - y
+      vars:
+        ansible_command_timeout: 1200
+
+    - name: show version
+      arubaoss_command:
+        commands: show version
+      register: version
+
+    - name: print the version
+      debug:
+        var: version

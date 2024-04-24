@@ -1,0 +1,56 @@
+- name: firmware update
+  hosts: all
+  collections:
+    - arubanetworks.aos_switch
+  vars:
+    ansible_connection: network_cli
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: gather all legacy fact
+      network.aruba_config:
+        gather_subset: all
+      register: current_firmware_version
+
+    - name: Display current firmware version
+      debug:
+        var: current_firmware_version.ansible_facts.ansible_net_version
+
+    - name: copyfile from tftp
+      arubaoss_command:
+        commands: 'copy tftp flash 192.168.135.90 WC_16_11_0051.swi secondary'
+        check_all: True
+        prompt:
+           - 'The primary image will be deleted.
+
+Continue (y/n)?'
+        answer:
+           - y
+      vars:
+        ansible_command_timeout: 1200
+     
+    - name: Setting boot image
+      arubaoss_command:
+        commands: '{{ item }}'
+      loop:
+        - boot system flash primary config config1 
+        - reload
+
+    - name: commit change
+      community.network.aruba_command:
+        commands: 'add command'
+        prompt:
+          - This operation may require a reload of the system. Do you want to proceed? [y/n]
+        answer:
+          - y
+      register: firmware_update_result
+      vars:
+        ansible_command_timeout: 1200
+
+    - name: Display firmware update result
+      debug:
+        var: firmware_update_result
+
+    - name: Display current firmware version
+      debug:
+        var: current_firmware.ansible_facts.ansible_net_version

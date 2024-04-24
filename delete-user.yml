@@ -9,6 +9,8 @@
     - vars.yml
   tasks:
     - name: delete user
+      vars:
+        - ansible_command_timeout: 60
       arubaoss_command:
         commands:
           - configure terminal
